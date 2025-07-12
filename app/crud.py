@@ -21,3 +21,20 @@ def create_user(db: Session, user: schemas.UserCreate):
     db.commit()
     db.refresh(db_user)
     return db_user
+
+def get_user_by_google_id(db: Session, google_id: str):
+    """透過 google_id 查詢使用者"""
+    return db.query(models.User).filter(models.User.google_id == google_id).first()
+
+def create_user_from_google(db: Session, user_info: dict):
+    """使用 Google 資訊建立新使用者"""
+    db_user = models.User(
+        email=user_info['email'],
+        username=user_info.get('name', user_info['email']), # 如果沒有名字，就用 email 當作使用者名稱
+        google_id=user_info['sub'],
+        is_active=True
+    )
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Login Test</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f4f4f4; }
+        #container { background-color: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; }
+        h1 { color: #333; }
+        #response { margin-top: 1.5rem; padding: 1rem; border: 1px solid #ddd; border-radius: 4px; background-color: #eee; width: 100%; max-width: 400px; word-wrap: break-word; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>FastAPI Google Login Test</h1>
+        <!-- Google Sign-In Button -->
+        <div id="g_id_onload"
+             data-client_id="151842620307-gga2p9ilnc52aetbkvva2l1hqvcrk4oj.apps.googleusercontent.com"
+             data-callback="handleCredentialResponse"
+             data-auto_select="false">
+        </div>
+        <div class="g_id_signin"
+             data-type="standard"
+             data-shape="rectangular"
+             data-theme="outline"
+             data-text="signin_with"
+             data-size="large"
+             data-logo_alignment="left">
+        </div>
+        
+        <h2>Backend Response:</h2>
+        <pre id="response">Waiting for login...</pre>
+    </div>
+
+    <!-- Google Platform Library -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <script>
+        // Callback function to handle the credential response
+        async function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+            const responseContainer = document.getElementById('response');
+            
+            try {
+                // Send the credential to your backend
+                const backendResponse = await fetch('/auth/google', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ credential: response.credential }),
+                });
+
+                const data = await backendResponse.json();
+
+                if (backendResponse.ok) {
+                    responseContainer.textContent = 'Login Successful!\n\n' + JSON.stringify(data, null, 2);
+                    responseContainer.style.borderColor = '#4CAF50'; // Green border for success
+                } else {
+                    responseContainer.textContent = 'Login Failed:\n\n' + JSON.stringify(data, null, 2);
+                    responseContainer.style.borderColor = '#F44336'; // Red border for error
+                }
+
+            } catch (error) {
+                console.error('Error sending token to backend:', error);
+                responseContainer.textContent = 'An error occurred: ' + error.message;
+                responseContainer.style.borderColor = '#F44336';
+            }
+        }
+    </script>
+</body>
+</html>

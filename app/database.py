@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# 使用 SQLite，它會在本機建立一個 ticketing.db 的檔案
+# 使用 SQLite，它會在本機建立一個 .db 的檔案
 SQLALCHEMY_DATABASE_URL = "sqlite:///./member.db"
 
 engine = create_engine(

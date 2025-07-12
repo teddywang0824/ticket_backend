@@ -27,3 +27,7 @@ class Token(BaseModel):
 # 用於解析 JWT 權杖內容
 class TokenData(BaseModel):
     username: Optional[str] = None
+
+# --- Google Token Schema ---
+class GoogleToken(BaseModel):
+    credential: str
