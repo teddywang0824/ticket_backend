@@ -22,6 +22,9 @@ if not SECRET_KEY or not GOOGLE_CLIENT_ID:
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30 # Token 30 分鐘後過期
 
+# 密碼雜湊設定
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """驗證明文密碼與雜湊密碼是否相符"""
